@@ -1,0 +1,28 @@
+.c-main {
+    background-image: url("../../../../public/img/banner.jpg");
+    background-repeat: no-repeat;
+    height: 100vh;
+    position: relative;
+
+    &::before {
+        content: '';
+        background-color: black;
+        opacity: .7;
+        height: 100%;
+        width: 100%;
+        position: absolute;
+    }
+
+    &__text {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+
+        h2 {
+            color: #fff;
+            position: relative;
+            z-index: 1;
+        }
+    }
+}
