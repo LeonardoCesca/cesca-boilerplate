@@ -11,6 +11,12 @@ const uglify = require('gulp-uglify');
 const rename = require('gulp-rename');
 const sass = require('gulp-sass');
 const autoprefixer = require('gulp-autoprefixer');
+const sourcemaps = require('gulp-sourcemaps');
+const terser = require('gulp-terser-js');
+const source  = require('vinyl-source-stream');
+const buffer = require('vinyl-buffer');
+const babelify = require('babelify');
+const browserify = require('browserify');
 const cssnano = require('gulp-cssnano');
 const concat = require('gulp-concat');
 const clean = require('gulp-clean');
@@ -27,17 +33,19 @@ const clear = () => {
 }
 
 const js = () => {
-    const source = './src/assets/js/*.js';
-
-    return src(source)
-        .pipe(changed(source))
-        .pipe(concat('bundle.js'))
-        .pipe(uglify())
-        .pipe(rename({
-            extname: '.min.js'
-        }))
-        .pipe(dest('./public/js/'))
-        .pipe(browsersync.stream());
+    return browserify('./src/assets/js/function.js', {debug:true})
+      .transform('babelify', {
+        presets: ['babel-preset-env'],
+        plugins: ['babel-plugin-transform-runtime']
+      })
+      .bundle()
+      .pipe(source('bundle.js'))
+      .pipe(buffer())
+      .pipe(sourcemaps.init({loadMaps: true}))
+      .pipe(terser())
+      .pipe(sourcemaps.write('.'))
+      .pipe(dest("./public/js/"))
+      .pipe(browsersync.stream());
 }
 
 const css = () => {
